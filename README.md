@@ -7,5 +7,5 @@ docker run \
     -d \
     --rm \
     --env HTTPS_PROXY="http://$USER:$(/usr/bin/pass hagl\proxy | sed -n 1p)@proxy1.hella.com:3128" \
-    -p 4000:4000  \
+    -p 3000:3000  \
     favourites-node

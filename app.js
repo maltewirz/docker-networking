@@ -54,35 +54,24 @@ app.post("/favorites", async (req, res) => {
 });
 
 app.get("/movies", async (req, res) => {
-  console.log("movies pinged");
-
   try {
-//     var config = {
-//   url: 'https://www.google.com',
-//   httpsAgent: agent
-// }
-
-// axios.request(config).then((res) => console.log(res.data)).catch(err => console.log(err))
-
     const response = await axios.get("https://swapi.dev/api/films/");
-    console.log("inside");
     res.status(200).json({ movies: response.data });
   } catch (error) {
-    console.log("failed");
     res.status(500).json({ message: "Something went wrong." });
   }
 });
 
 app.get("/people", async (req, res) => {
   try {
-    const response = await axios.get("https://swapi.dev/api/people");
+    const response = await axios.get("https://swapi.dev/api/people/");
     res.status(200).json({ people: response.data });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong." });
   }
 });
 
-app.listen(4000);
+app.listen(3000);
 
 // mongoose.connect(
 //   'mongodb://localhost:27017/swfavorites',
@@ -91,7 +80,7 @@ app.listen(4000);
 //     if (err) {
 //       console.log(err);
 //     } else {
-//       app.listen(4000);
+//       app.listen(3000);
 //     }
 //   }
 // );
