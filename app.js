@@ -1,33 +1,37 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const axios = require('axios').default;
-const mongoose = require('mongoose');
-
-const Favorite = require('./models/favorite');
+const express = require("express");
+const bodyParser = require("body-parser");
+const HttpsProxyAgent = require('https-proxy-agent');
+const axiosDefaultConfig = {
+  proxy: false,
+  httpsAgent: new HttpsProxyAgent(process.env.HTTPS_PROXY)
+};
+const axios = require("axios").create(axiosDefaultConfig);
+const mongoose = require("mongoose");
+const Favorite = require("./models/favorite");
 
 const app = express();
 
 app.use(bodyParser.json());
 
-app.get('/favorites', async (req, res) => {
+app.get("/favorites", async (req, res) => {
   const favorites = await Favorite.find();
   res.status(200).json({
     favorites: favorites,
   });
 });
 
-app.post('/favorites', async (req, res) => {
+app.post("/favorites", async (req, res) => {
   const favName = req.body.name;
   const favType = req.body.type;
   const favUrl = req.body.url;
 
   try {
-    if (favType !== 'movie' && favType !== 'character') {
+    if (favType !== "movie" && favType !== "character") {
       throw new Error('"type" should be "movie" or "character"!');
     }
     const existingFav = await Favorite.findOne({ name: favName });
     if (existingFav) {
-      throw new Error('Favorite exists already!');
+      throw new Error("Favorite exists already!");
     }
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -43,38 +47,51 @@ app.post('/favorites', async (req, res) => {
     await favorite.save();
     res
       .status(201)
-      .json({ message: 'Favorite saved!', favorite: favorite.toObject() });
+      .json({ message: "Favorite saved!", favorite: favorite.toObject() });
   } catch (error) {
-    res.status(500).json({ message: 'Something went wrong.' });
+    res.status(500).json({ message: "Something went wrong." });
   }
 });
 
-app.get('/movies', async (req, res) => {
+app.get("/movies", async (req, res) => {
+  console.log("movies pinged");
+
   try {
-    const response = await axios.get('https://swapi.dev/api/films');
+//     var config = {
+//   url: 'https://www.google.com',
+//   httpsAgent: agent
+// }
+
+// axios.request(config).then((res) => console.log(res.data)).catch(err => console.log(err))
+
+    const response = await axios.get("https://swapi.dev/api/films/");
+    console.log("inside");
     res.status(200).json({ movies: response.data });
   } catch (error) {
-    res.status(500).json({ message: 'Something went wrong.' });
+    console.log("failed");
+    res.status(500).json({ message: "Something went wrong." });
   }
 });
 
-app.get('/people', async (req, res) => {
+app.get("/people", async (req, res) => {
   try {
-    const response = await axios.get('https://swapi.dev/api/people');
+    const response = await axios.get("https://swapi.dev/api/people");
     res.status(200).json({ people: response.data });
   } catch (error) {
-    res.status(500).json({ message: 'Something went wrong.' });
+    res.status(500).json({ message: "Something went wrong." });
   }
 });
 
-mongoose.connect(
-  'mongodb://localhost:27017/swfavorites',
-  { useNewUrlParser: true },
-  (err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      app.listen(4000);
-    }
-  }
-);
+app.listen(4000);
+
+// mongoose.connect(
+//   'mongodb://localhost:27017/swfavorites',
+//   { useNewUrlParser: true },
+//   (err) => {
+//     if (err) {
+//       console.log(err);
+//     } else {
+//       app.listen(4000);
+//     }
+//   }
+// );
