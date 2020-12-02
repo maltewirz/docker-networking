@@ -1,9 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const HttpsProxyAgent = require('https-proxy-agent');
+const HttpsProxyAgent = require("https-proxy-agent");
 const axiosDefaultConfig = {
   proxy: false,
-  httpsAgent: new HttpsProxyAgent(process.env.HTTPS_PROXY)
+  httpsAgent: new HttpsProxyAgent(process.env.HTTPS_PROXY),
 };
 const axios = require("axios").create(axiosDefaultConfig);
 const mongoose = require("mongoose");
