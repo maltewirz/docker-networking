@@ -1,5 +1,4 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const HttpsProxyAgent = require("https-proxy-agent");
 const axiosDefaultConfig = {
   proxy: false,
@@ -8,10 +7,9 @@ const axiosDefaultConfig = {
 const axios = require("axios").create(axiosDefaultConfig);
 const mongoose = require("mongoose");
 const Favorite = require("./models/favorite");
-
 const app = express();
 
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.get("/favorites", async (req, res) => {
   const favorites = await Favorite.find();
@@ -24,7 +22,6 @@ app.post("/favorites", async (req, res) => {
   const favName = req.body.name;
   const favType = req.body.type;
   const favUrl = req.body.url;
-
   try {
     if (favType !== "movie" && favType !== "character") {
       throw new Error('"type" should be "movie" or "character"!');
@@ -71,16 +68,15 @@ app.get("/people", async (req, res) => {
   }
 });
 
-app.listen(3000);
 
-// mongoose.connect(
-//   'mongodb://localhost:27017/swfavorites',
-//   { useNewUrlParser: true },
-//   (err) => {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       app.listen(3000);
-//     }
-//   }
-// );
+mongoose.connect(
+  'mongodb://mongodb:27017/swfavorites',
+  { useNewUrlParser: true },
+  (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      app.listen(3000);
+    }
+  }
+);
