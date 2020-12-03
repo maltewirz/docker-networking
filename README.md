@@ -11,15 +11,13 @@ docker run \
     -p 3000:3000  \
     favourites-node
 
-
 docker run \
     -d \
     --name mongodb \
     --network favorites-net \
     docker-remote.artifactory.ham.hella.com/mongo
 
-
-When sending a query of 
+When sending a query of
 {
     "name": "A New Hope",
     "type": "character",
